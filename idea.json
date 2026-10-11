@@ -1,0 +1,25 @@
+{
+  "title": "covercheck — vendor insurance certificate checker for HOA boards",
+  "repoName": "covercheck",
+  "oneLiner": "For self-managed HOA and condo boards and small property managers, it checks each vendor's insurance certificate for the endorsement, name and expiry that actually protect the association, and nudges vendors before coverage lapses, at a board-sized price instead of $99+/month.",
+  "overlaps": "none",
+  "tags": [
+    "property",
+    "compliance"
+  ],
+  "effort": "Medium",
+  "confidence": "Low",
+  "sources": [
+    "https://www.saashub.com/certshield-app",
+    "https://vertikalrms.com/article/how-much-does-coi-tracking-software-cost-2025-pricing-guide/",
+    "https://habitatmag.com/Board-Talk/sub-contractor2",
+    "https://www.davis-stirling.com/HOME/C/Contractor-Insurance",
+    "https://www.jaburgwilk.com/?p=4790",
+    "https://netvendor.com/blog/vendor-compliance-requirements-why-theyre-strict-what-it-means-for-your-business",
+    "https://sclawyersweekly.com/?p=12758",
+    "https://alternativeto.net/software/certfocus-by-vertikal-rms/about",
+    "https://www.gartner.com/reviews/product/smartcompliance"
+  ],
+  "slug": "covercheck",
+  "recordedAt": "2026-10-11T18:36:32.372Z"
+}
