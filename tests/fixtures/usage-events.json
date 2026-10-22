@@ -1,0 +1,19 @@
+{
+  "description": "Usage recorded during a demand-test week: 7 uploads, 4 passing and 3 failing verdicts over three days.",
+  "events": [
+    { "day": "2026-10-19", "kind": "upload" },
+    { "day": "2026-10-19", "kind": "upload" },
+    { "day": "2026-10-19", "kind": "fail" },
+    { "day": "2026-10-19", "kind": "pass" },
+    { "day": "2026-10-20", "kind": "upload" },
+    { "day": "2026-10-20", "kind": "upload" },
+    { "day": "2026-10-20", "kind": "upload" },
+    { "day": "2026-10-20", "kind": "fail" },
+    { "day": "2026-10-20", "kind": "pass" },
+    { "day": "2026-10-20", "kind": "pass" },
+    { "day": "2026-10-22", "kind": "upload" },
+    { "day": "2026-10-22", "kind": "upload" },
+    { "day": "2026-10-22", "kind": "fail" },
+    { "day": "2026-10-22", "kind": "pass" }
+  ]
+}
