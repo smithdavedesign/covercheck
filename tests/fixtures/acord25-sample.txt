@@ -1,0 +1,57 @@
+ACORD   CERTIFICATE OF LIABILITY INSURANCE   DATE (MM/DD/YYYY)
+                                                                                     10/15/2026
+THIS CERTIFICATE IS ISSUED AS A MATTER OF INFORMATION ONLY AND CONFERS NO RIGHTS UPON THE CERTIFICATE HOLDER. THIS
+CERTIFICATE DOES NOT AFFIRMATIVELY OR NEGATIVELY AMEND, EXTEND OR ALTER THE COVERAGE AFFORDED BY THE POLICIES
+BELOW. THIS CERTIFICATE OF INSURANCE DOES NOT CONSTITUTE A CONTRACT BETWEEN THE ISSUING INSURER(S), AUTHORIZED
+REPRESENTATIVE OR PRODUCER, AND THE CERTIFICATE HOLDER.
+IMPORTANT: If the certificate holder is an ADDITIONAL INSURED, the policy(ies) must have ADDITIONAL INSURED provisions
+or be endorsed. If SUBROGATION IS WAIVED, subject to the terms and conditions of the policy, certain policies may
+require an endorsement. A statement on this certificate does not confer rights to the certificate holder in lieu of
+such endorsement(s).
+PRODUCER                                     CONTACT NAME:   Dana Smith
+Smith Insurance Agency                       PHONE (A/C, No, Ext):   (555) 555-0100   FAX (A/C, No):   (555) 555-0101
+100 Main Street                              E-MAIL ADDRESS:   certs@smithagency.example
+Springfield, IL 62701                        INSURER(S) AFFORDING COVERAGE   NAIC #
+                                             INSURER A :   Hartford Casualty Insurance Company   29424
+INSURED                                      INSURER B :   Travelers Indemnity Company   25658
+Acme Landscaping LLC                         INSURER C :
+45 Elm Street                                INSURER D :
+Springfield, IL 62704                        INSURER E :
+                                             INSURER F :
+COVERAGES   CERTIFICATE NUMBER:   2026-0412   REVISION NUMBER:
+THIS IS TO CERTIFY THAT THE POLICIES OF INSURANCE LISTED BELOW HAVE BEEN ISSUED TO THE INSURED NAMED ABOVE FOR THE
+POLICY PERIOD INDICATED. NOTWITHSTANDING ANY REQUIREMENT, TERM OR CONDITION OF ANY CONTRACT OR OTHER DOCUMENT WITH
+RESPECT TO WHICH THIS CERTIFICATE MAY BE ISSUED OR MAY PERTAIN, THE INSURANCE AFFORDED BY THE POLICIES DESCRIBED
+HEREIN IS SUBJECT TO ALL THE TERMS, EXCLUSIONS AND CONDITIONS OF SUCH POLICIES. LIMITS SHOWN MAY HAVE BEEN REDUCED
+BY PAID CLAIMS.
+INSR   TYPE OF INSURANCE   ADDL   SUBR   POLICY NUMBER   POLICY EFF   POLICY EXP   LIMITS
+LTR                        INSD   WVD                    (MM/DD/YYYY)   (MM/DD/YYYY)
+A   X   COMMERCIAL GENERAL LIABILITY   Y   Y   GL-1234567   03/01/2026   03/01/2027   EACH OCCURRENCE   $   1,000,000
+        CLAIMS-MADE   X   OCCUR                                    DAMAGE TO RENTED PREMISES (Ea occurrence)   $   100,000
+                                                                   MED EXP (Any one person)   $   5,000
+                                                                   PERSONAL & ADV INJURY   $   1,000,000
+    GEN'L AGGREGATE LIMIT APPLIES PER:                             GENERAL AGGREGATE   $   2,000,000
+    X   POLICY   PRO-JECT   LOC                                    PRODUCTS - COMP/OP AGG   $   2,000,000
+    OTHER:                                                         $
+    AUTOMOBILE LIABILITY                                           COMBINED SINGLE LIMIT (Ea accident)   $
+    ANY AUTO                                                       BODILY INJURY (Per person)   $
+    OWNED AUTOS ONLY   SCHEDULED AUTOS                             BODILY INJURY (Per accident)   $
+    HIRED AUTOS ONLY   NON-OWNED AUTOS ONLY                        PROPERTY DAMAGE (Per accident)   $
+    UMBRELLA LIAB   OCCUR                                          EACH OCCURRENCE   $
+    EXCESS LIAB   CLAIMS-MADE                                      AGGREGATE   $
+    DED   RETENTION $                                              $
+B   WORKERS COMPENSATION   WC-7654321   01/01/2026   01/01/2027   X   PER STATUTE   OTH-ER
+    AND EMPLOYERS' LIABILITY   Y / N                               E.L. EACH ACCIDENT   $   1,000,000
+    ANY PROPRIETOR/PARTNER/EXECUTIVE   N   N / A                   E.L. DISEASE - EA EMPLOYEE   $   1,000,000
+    OFFICER/MEMBER EXCLUDED? (Mandatory in NH)                     E.L. DISEASE - POLICY LIMIT   $   1,000,000
+    If yes, describe under DESCRIPTION OF OPERATIONS below
+DESCRIPTION OF OPERATIONS / LOCATIONS / VEHICLES (ACORD 101, Additional Remarks Schedule, may be attached if more space is required)
+Landscape maintenance of Maple Ridge common areas. Maple Ridge Homeowners Association is included as additional
+insured with respect to general liability per forms CG 20 10 04 13 and CG 20 37 04 13 when required by written contract.
+CERTIFICATE HOLDER                                    CANCELLATION
+Maple Ridge Homeowners Association, Inc.              SHOULD ANY OF THE ABOVE DESCRIBED POLICIES BE CANCELLED BEFORE
+c/o Board Treasurer                                   THE EXPIRATION DATE THEREOF, NOTICE WILL BE DELIVERED IN
+12 Maple Ridge Drive                                  ACCORDANCE WITH THE POLICY PROVISIONS.
+Springfield, IL 62702                                 AUTHORIZED REPRESENTATIVE
+(C) 1988-2015 ACORD CORPORATION. All rights reserved.
+ACORD 25 (2016/03)   The ACORD name and logo are registered marks of ACORD

@@ -1,0 +1,564 @@
+:root {
+  --ink: #1d2430;
+  --muted: #5b6573;
+  --line: #d8dde4;
+  --accent: #1f5fae;
+  --pass: #1d7a3e;
+  --pass-bg: #e8f5ec;
+  --fail: #b42318;
+  --fail-bg: #fdecea;
+  --warn: #9a6200;
+  --warn-bg: #fff4dc;
+  /* Named fonts rather than system-ui, which resolves to a monospace font on some Linux setups. */
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  color: var(--ink);
+  line-height: 1.5;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  background: #f6f7f9;
+}
+
+header.site {
+  display: flex;
+  gap: 1rem;
+  align-items: baseline;
+  padding: 0.75rem 1.5rem;
+  background: #fff;
+  border-bottom: 1px solid var(--line);
+  color: var(--muted);
+}
+
+header.site .brand {
+  font-weight: 700;
+  font-size: 1.25rem;
+  color: var(--accent);
+  text-decoration: none;
+}
+
+main {
+  max-width: 60rem;
+  margin: 0 auto;
+  padding: 1.5rem;
+}
+
+h1 {
+  margin: 0.5rem 0;
+  font-size: 1.6rem;
+}
+
+h2 {
+  font-size: 1.15rem;
+  margin: 0 0 0.5rem;
+}
+
+.lede,
+.hint {
+  color: var(--muted);
+}
+
+.hint {
+  margin-top: 0;
+  font-size: 0.9rem;
+}
+
+section {
+  background: #fff;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 1.25rem;
+  margin: 1rem 0;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+  gap: 0.75rem 1rem;
+}
+
+fieldset {
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  margin: 0 0 1rem;
+  padding: 0.75rem 1rem 1rem;
+}
+
+legend {
+  font-weight: 600;
+  padding: 0 0.25rem;
+}
+
+label {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+label.checkbox {
+  flex-direction: row;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+label.wide {
+  grid-column: 1 / -1;
+}
+
+input,
+textarea {
+  font: inherit;
+  padding: 0.45rem 0.6rem;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  background: #fff;
+}
+
+input[type='checkbox'] {
+  width: 1.1rem;
+  height: 1.1rem;
+}
+
+.actions {
+  display: flex;
+  gap: 0.75rem;
+  align-items: end;
+}
+
+button {
+  font: inherit;
+  font-weight: 600;
+  padding: 0.55rem 1.1rem;
+  border-radius: 6px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: #fff;
+  cursor: pointer;
+}
+
+button.secondary {
+  background: #fff;
+  color: var(--accent);
+}
+
+button:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.message {
+  padding: 0.75rem 1rem;
+  border-radius: 6px;
+  background: var(--warn-bg);
+  color: var(--warn);
+}
+
+.verdict.pass {
+  border-color: var(--pass);
+}
+
+.verdict.fail {
+  border-color: var(--fail);
+}
+
+.verdict.pass h2 {
+  color: var(--pass);
+}
+
+.verdict.fail h2 {
+  color: var(--fail);
+}
+
+.rules {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.rules li {
+  display: flex;
+  gap: 0.6rem;
+  padding: 0.5rem 0.75rem;
+  border-radius: 6px;
+  margin-bottom: 0.4rem;
+}
+
+.rules li.pass {
+  background: var(--pass-bg);
+}
+
+.rules li.fail {
+  background: var(--fail-bg);
+}
+
+.rules li.warn {
+  background: var(--warn-bg);
+}
+
+.rules .mark {
+  font-weight: 700;
+  width: 1rem;
+  flex-shrink: 0;
+}
+
+.rules .mark svg {
+  vertical-align: -1px;
+}
+
+.rules li.pass .mark {
+  color: var(--pass);
+}
+
+.rules li.fail .mark {
+  color: var(--fail);
+}
+
+.rules li.warn .mark,
+.rules .warning {
+  color: var(--warn);
+}
+
+details pre {
+  white-space: pre-wrap;
+  font-size: 0.75rem;
+  background: #f6f7f9;
+  padding: 0.75rem;
+  border-radius: 6px;
+  max-height: 20rem;
+  overflow: auto;
+}
+
+.disclaimer {
+  font-size: 0.85rem;
+  color: var(--muted);
+  border-top: 1px solid var(--line);
+  padding-top: 0.75rem;
+}
+
+header.site nav {
+  display: flex;
+  gap: 1rem;
+  margin-left: auto;
+}
+
+header.site nav a {
+  color: var(--accent);
+  text-decoration: none;
+  font-weight: 500;
+}
+
+fieldset.plain {
+  border: 0;
+  margin: 0;
+  padding: 0;
+}
+
+fieldset:disabled input {
+  background: #f6f7f9;
+  color: var(--muted);
+}
+
+.notice {
+  background: #fff;
+  border: 1px solid var(--accent);
+  border-radius: 8px;
+  padding: 0.75rem 1rem;
+  margin: 1rem 0;
+}
+
+.notice summary {
+  font-weight: 600;
+  color: var(--accent);
+  cursor: pointer;
+}
+
+.notice input {
+  width: 100%;
+  margin-top: 0.75rem;
+  font-family: ui-monospace, monospace;
+  font-size: 0.85rem;
+}
+
+.saved {
+  font-weight: 600;
+  color: var(--pass);
+}
+
+.table-wrap {
+  overflow-x: auto;
+}
+
+table.vendors {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.9rem;
+}
+
+table.vendors th,
+table.vendors td {
+  text-align: left;
+  vertical-align: top;
+  padding: 0.6rem 0.5rem;
+  border-bottom: 1px solid var(--line);
+}
+
+table.vendors .hint {
+  margin: 0;
+  font-size: 0.8rem;
+}
+
+.pill {
+  display: inline-block;
+  white-space: nowrap;
+  padding: 0.1rem 0.6rem;
+  border-radius: 999px;
+  font-size: 0.8rem;
+  font-weight: 600;
+  background: #eceff3;
+  color: var(--muted);
+}
+
+.status-ok .pill {
+  background: var(--pass-bg);
+  color: var(--pass);
+}
+
+.status-expiring .pill {
+  background: var(--warn-bg);
+  color: var(--warn);
+}
+
+.status-expired .pill,
+.status-not_compliant .pill {
+  background: var(--fail-bg);
+  color: var(--fail);
+}
+
+.reasons {
+  margin: 0.35rem 0 0;
+  padding-left: 1.1rem;
+  color: var(--fail);
+  font-size: 0.8rem;
+}
+
+.row-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+  align-items: stretch;
+  min-width: 13rem;
+}
+
+a.button {
+  display: inline-block;
+  text-align: center;
+  text-decoration: none;
+  font-weight: 600;
+  font-size: 0.85rem;
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  border: 1px solid var(--accent);
+  background: var(--accent);
+  color: #fff;
+}
+
+a.button.secondary {
+  background: #fff;
+  color: var(--accent);
+}
+
+button.link {
+  background: none;
+  border: 0;
+  padding: 0.2rem;
+  color: var(--fail);
+  font-weight: 500;
+  font-size: 0.85rem;
+}
+
+.actions.log {
+  flex-wrap: wrap;
+  align-items: center;
+  margin-top: 0.75rem;
+}
+
+.actions.log .hint {
+  margin: 0;
+}
+
+/* ── Landing page ─────────────────────────────────────────────────────────── */
+
+.hero {
+  padding: 1.5rem 0 0.5rem;
+}
+
+.hero h1 {
+  font-size: 2rem;
+  line-height: 1.25;
+  max-width: 42rem;
+}
+
+.hero .lede {
+  font-size: 1.1rem;
+  max-width: 44rem;
+}
+
+.hero .actions {
+  flex-wrap: wrap;
+  margin: 1.25rem 0 0.5rem;
+}
+
+a.button.cta {
+  font-size: 1rem;
+  padding: 0.65rem 1.3rem;
+}
+
+.sample {
+  margin-top: 2rem;
+}
+
+.steps,
+.checks {
+  padding-left: 1.25rem;
+  margin: 0;
+}
+
+.steps li,
+.checks li {
+  margin-bottom: 0.5rem;
+}
+
+.pricing .price {
+  font-size: 1.1rem;
+  margin: 0 0 0.5rem;
+}
+
+.pricing .price strong {
+  font-size: 2rem;
+  color: var(--accent);
+}
+
+/* ── Legal pages and footer ───────────────────────────────────────────────── */
+
+.legal {
+  max-width: 44rem;
+}
+
+.legal h2 {
+  margin-top: 1.5rem;
+}
+
+footer.site {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 1.5rem;
+  align-items: baseline;
+  max-width: 60rem;
+  margin: 1rem auto 0;
+  padding: 1rem 1.5rem 2rem;
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+footer.site nav {
+  display: flex;
+  gap: 1rem;
+}
+
+footer.site a {
+  color: var(--accent);
+}
+
+/* ── Phones ───────────────────────────────────────────────────────────────── */
+
+@media (max-width: 40rem) {
+  header.site {
+    flex-wrap: wrap;
+    gap: 0.25rem 1rem;
+    padding: 0.75rem 1rem;
+  }
+
+  header.site .tagline {
+    display: none;
+  }
+
+  header.site nav {
+    margin-left: 0;
+  }
+
+  main {
+    padding: 1rem;
+  }
+
+  .hero h1 {
+    font-size: 1.5rem;
+  }
+
+  .hero .lede {
+    font-size: 1rem;
+  }
+
+  section {
+    padding: 1rem;
+  }
+
+  /* The vendor table becomes one card per vendor; the date cells carry their own labels. */
+  table.vendors thead {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+  }
+
+  table.vendors,
+  table.vendors tbody,
+  table.vendors tr,
+  table.vendors td {
+    display: block;
+    width: 100%;
+  }
+
+  table.vendors tr {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid var(--line);
+  }
+
+  table.vendors td {
+    border: 0;
+    padding: 0.15rem 0;
+  }
+
+  table.vendors td[data-label]::before {
+    content: attr(data-label) ': ';
+    color: var(--muted);
+  }
+
+  table.vendors td[data-label] .hint {
+    display: inline;
+    margin-left: 0.4rem;
+  }
+
+  .row-actions {
+    flex-direction: row;
+    flex-wrap: wrap;
+    min-width: 0;
+    padding-top: 0.5rem;
+  }
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}

@@ -1,0 +1,12 @@
+{
+  "name": "Default association template",
+  "certificateHolder": "",
+  "generalLiability": {
+    "eachOccurrence": 1000000,
+    "aggregate": 2000000
+  },
+  "workersCompRequired": true,
+  "requiredEndorsements": ["CG 20 10", "CG 20 37"],
+  "additionalInsuredWording": true,
+  "expiryWarningDays": 30
+}
