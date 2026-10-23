@@ -1,10 +1,12 @@
-import type { Metadata } from 'next';
+import { pageMetadata } from '../../lib/seo';
 import { Checker } from './checker';
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: 'Check a certificate · covercheck',
-  description: 'Check a vendor’s certificate of insurance against your HOA’s requirements.',
-};
+  description:
+    'Upload a vendor’s ACORD 25 certificate of insurance and check it free against your HOA’s requirements: limits, expiry, named insured and endorsements.',
+  path: '/check',
+});
 
 export default async function CheckPage({ searchParams }: { searchParams: Promise<{ vendor?: string | string[] }> }) {
   const { vendor } = await searchParams;

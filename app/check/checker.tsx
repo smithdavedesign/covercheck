@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState, type FormEvent } from 'react';
+import { signal } from '../../lib/beacon';
 import { DISCLAIMER, type CheckResult } from '../../lib/check';
 import {
   dashboardKeyFromHash,
@@ -168,8 +169,11 @@ export function Checker({ vendorId }: { vendorId?: string } = {}) {
     try {
       const response = await fetch(request.url, request.init);
       const body = await readJson(response);
-      if (response.ok) setResult(body as unknown as CheckResponse);
-      else {
+      if (response.ok) {
+        setResult(body as unknown as CheckResponse);
+        // The core action: a certificate checked to a verdict. Counted once per browser.
+        signal('activate');
+      } else {
         setResult(null);
         setMessage(typeof body.message === 'string' ? body.message : 'The check failed. Try again.');
       }

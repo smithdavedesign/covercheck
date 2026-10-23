@@ -1,14 +1,15 @@
-import type { Metadata } from 'next';
+import { pageMetadata } from '../lib/seo';
 import { siteConfig } from '../lib/site';
 import { Landing } from './landing';
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: 'covercheck: check your vendors’ insurance certificates',
   description:
-    'For HOA and condo boards: upload a vendor’s certificate of insurance and see in plain English whether the limits, expiry, named insured and additional insured endorsements protect your association.',
-};
+    'Upload a vendor’s certificate of insurance and see in plain English whether its limits, expiry and endorsements protect your HOA or condo association.',
+  path: '/',
+});
 
-/** The landing page. CHECKOUT_URL is read at build time, so set it before deploying. */
+/** The landing page. STRIPE_PAYMENT_LINK is read at build time, so set it before deploying. */
 export default function Home() {
-  return <Landing checkoutUrl={siteConfig(process.env).checkoutUrl} />;
+  return <Landing paymentLink={siteConfig(process.env).paymentLink} />;
 }

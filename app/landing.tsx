@@ -2,6 +2,7 @@ import { DISCLAIMER, check } from '../lib/check';
 import { REMINDER_WINDOWS } from '../lib/email';
 import { DEFAULT_REQUIREMENTS } from '../lib/schema';
 import { PRICE_PER_MONTH_USD } from '../lib/site';
+import { BuyButton } from './beacon';
 import { Verdict } from './check/checker';
 
 /**
@@ -33,7 +34,7 @@ const SAMPLE = {
 
 const REMINDER_DAYS = `${REMINDER_WINDOWS.slice(0, -1).join(', ')} and ${REMINDER_WINDOWS.at(-1)} days`;
 
-export function Landing({ checkoutUrl }: { checkoutUrl: string | null }) {
+export function Landing({ paymentLink }: { paymentLink: string | null }) {
   return (
     <div className="landing">
       <div className="hero">
@@ -108,11 +109,11 @@ export function Landing({ checkoutUrl }: { checkoutUrl: string | null }) {
           <li>Reminder emails to vendors and their agents</li>
           <li>Check log (CSV) for board minutes</li>
         </ul>
-        {checkoutUrl ? (
+        {paymentLink ? (
           <>
-            <a className="button cta" href={checkoutUrl}>
-              Subscribe for ${PRICE_PER_MONTH_USD}/month
-            </a>
+            <BuyButton href={paymentLink} className="button cta">
+              Buy for ${PRICE_PER_MONTH_USD}/month
+            </BuyButton>
             <p className="hint">
               Secure checkout by Stripe. Cancel any time. See the <a href="/terms">terms</a>.
             </p>

@@ -1,10 +1,14 @@
 import type { Metadata } from 'next';
+import { pageMetadata } from '../../lib/seo';
 import { Dashboard } from './dashboard';
 
 export const metadata: Metadata = {
-  title: 'Vendor dashboard · covercheck',
-  description: 'Every vendor’s certificate status and expiry, with automatic reminders before coverage lapses.',
-  // The page is reached through private links; keep it out of search results.
+  ...pageMetadata({
+    title: 'Vendor dashboard · covercheck',
+    description: 'Every vendor’s certificate status and expiry, with automatic reminders before coverage lapses.',
+    path: '/dashboard',
+  }),
+  // The page is reached through private links; keep it out of search results (and out of the sitemap).
   robots: { index: false, follow: false },
 };
 
