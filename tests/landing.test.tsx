@@ -13,10 +13,10 @@ afterEach(() => {
 
 /** Server-rendered HTML without React's text-node separators. */
 const html = (element: React.ReactElement) => renderToString(element).replace(/<!-- -->/g, '');
-const CHECKOUT = 'https://buy.stripe.com/example-link';
+const PAYMENT_LINK = 'https://buy.stripe.com/example-link';
 
 describe('landing page', () => {
-  const page = html(<Landing checkoutUrl={null} />);
+  const page = html(<Landing paymentLink={null} />);
 
   it('leads with an upload-a-certificate call to action that opens the checker', () => {
     expect(page).toMatch(/<a[^>]*href="\/check"[^>]*>Check a certificate free<\/a>/);
@@ -36,24 +36,24 @@ describe('landing page', () => {
     expect(page).toMatch(/30, 14 and 3 days/);
   });
 
-  it('shows the price, free during the pilot until checkout is configured', () => {
-    expect(PRICE_PER_MONTH_USD).toBe(19);
-    expect(page).toContain('$19');
+  it('shows the REVENUE.md price, free during the pilot until a payment link is configured', () => {
+    expect(PRICE_PER_MONTH_USD).toBe(15);
+    expect(page).toContain('$15');
     expect(page).toContain('per month per association');
     expect(page).toContain('Free during the pilot');
-    expect(page).not.toContain('Subscribe');
+    expect(page).not.toMatch(/>Buy/);
   });
 
-  it('offers checkout when a checkout link is configured', () => {
-    const withCheckout = html(<Landing checkoutUrl={CHECKOUT} />);
-    expect(withCheckout).toMatch(new RegExp(`<a[^>]*href="${CHECKOUT}"[^>]*>Subscribe`));
-    expect(withCheckout).not.toContain('Free during the pilot');
+  it('offers a Buy button when a payment link is configured', () => {
+    const withLink = html(<Landing paymentLink={PAYMENT_LINK} />);
+    expect(withLink).toMatch(new RegExp(`<a[^>]*href="${PAYMENT_LINK}"[^>]*>Buy for \\$15/month`));
+    expect(withLink).not.toContain('Free during the pilot');
   });
 
-  it('reads the checkout link from CHECKOUT_URL, ignoring anything that is not https', () => {
-    vi.stubEnv('CHECKOUT_URL', CHECKOUT);
-    expect(html(<Home />)).toContain(`href="${CHECKOUT}"`);
-    vi.stubEnv('CHECKOUT_URL', 'javascript:alert(1)');
+  it('reads the payment link from STRIPE_PAYMENT_LINK, ignoring anything that is not https', () => {
+    vi.stubEnv('STRIPE_PAYMENT_LINK', PAYMENT_LINK);
+    expect(html(<Home />)).toContain(`href="${PAYMENT_LINK}"`);
+    vi.stubEnv('STRIPE_PAYMENT_LINK', 'javascript:alert(1)');
     const unsafe = html(<Home />);
     expect(unsafe).not.toContain('javascript:');
     expect(unsafe).toContain('Free during the pilot');
@@ -62,15 +62,19 @@ describe('landing page', () => {
 
 describe('siteConfig', () => {
   it.each([
-    [CHECKOUT, CHECKOUT],
+    [PAYMENT_LINK, PAYMENT_LINK],
     ['  https://pay.example.com/covercheck  ', 'https://pay.example.com/covercheck'],
     ['http://buy.stripe.com/example-link', null],
     ['javascript:alert(1)', null],
     ['buy.stripe.com/example-link', null],
     ['', null],
     [undefined, null],
-  ])('CHECKOUT_URL %j → %j', (value, expected) => {
-    expect(siteConfig({ CHECKOUT_URL: value }).checkoutUrl).toBe(expected);
+  ])('STRIPE_PAYMENT_LINK %j → %j', (value, expected) => {
+    expect(siteConfig({ STRIPE_PAYMENT_LINK: value }).paymentLink).toBe(expected);
+  });
+
+  it('ignores the old CHECKOUT_URL name', () => {
+    expect(siteConfig({ CHECKOUT_URL: PAYMENT_LINK }).paymentLink).toBeNull();
   });
 
   it.each([
@@ -87,47 +91,71 @@ describe('siteConfig', () => {
 });
 
 describe('legal pages', () => {
-  it('terms: not proof of coverage, no advice, Stripe billing, cancelling, and the contact address', () => {
+  it('terms: not proof of coverage, no advice, no warranty, the price, Stripe billing, cancelling, refunds and contact', () => {
     vi.stubEnv('CONTACT_EMAIL', 'hello@covercheck.example');
     const terms = html(<TermsPage />);
     expect(terms).toContain('<h1');
     expect(terms).toContain('not proof of coverage');
     expect(terms).toMatch(/legal or insurance advice/);
+    expect(terms).toMatch(/without warranty of any kind/);
+    expect(terms).toContain('$15 per month per association');
     expect(terms).toContain('Stripe');
-    expect(terms).toMatch(/cancel/i);
+    expect(terms).toMatch(/cancel any time/i);
+    expect(terms).toMatch(/within 14 days of a charge, we refund that month/);
+    expect(terms).toContain('href="https://github.com/smithdavedesign/covercheck/issues"');
     expect(terms).toContain('href="mailto:hello@covercheck.example"');
   });
 
-  it('privacy: what is stored, that PDFs are not, anonymous usage counts, processors and deletion', () => {
+  it('privacy: what is stored, that PDFs are not, no cookies, usage counts, processors and deletion', () => {
     vi.stubEnv('CONTACT_EMAIL', 'hello@covercheck.example');
     const privacy = html(<PrivacyPage />);
     expect(privacy).toContain('<h1');
     expect(privacy).toMatch(/vendor names and email addresses/i);
     expect(privacy).toMatch(/PDF is never stored/i);
     expect(privacy).toMatch(/usage counts/i);
-    expect(privacy).toMatch(/no cookies/i);
-    for (const processor of ['Vercel', 'Neon', 'Stripe']) expect(privacy).toContain(processor);
+    expect(privacy).toMatch(/sets no cookies/i);
+    for (const processor of ['Vercel', 'Neon', 'Stripe', 'RepoHQ']) expect(privacy).toContain(processor);
     expect(privacy).toMatch(/delete/i);
     expect(privacy).toContain('href="mailto:hello@covercheck.example"');
   });
 
-  it('says how to reach covercheck even before a contact address is configured', () => {
+  it('privacy: names the three visit-counter signals, what they carry and how to switch them off', () => {
+    const privacy = html(<PrivacyPage />);
+    for (const kind of ['visit', 'activate', 'checkout']) expect(privacy).toContain(`<strong>${kind}</strong>`);
+    expect(privacy).toContain('repohq.vercel.app');
+    expect(privacy).toMatch(/no cookie, identifier/);
+    expect(privacy).toContain('repohq:notrack');
+  });
+
+  it('both point to GitHub issues for contact, even before a contact address is configured', () => {
     vi.stubEnv('CONTACT_EMAIL', '');
     vi.stubEnv('EMAIL_FROM', '');
-    expect(html(<PrivacyPage />)).not.toContain('mailto:');
-    expect(html(<TermsPage />)).toMatch(/contact address will be published here/i);
+    for (const page of [html(<PrivacyPage />), html(<TermsPage />)]) {
+      expect(page).not.toContain('mailto:');
+      expect(page).toContain('href="https://github.com/smithdavedesign/covercheck/issues"');
+    }
   });
 });
 
 describe('site layout', () => {
-  it('links the brand to the landing page and every page to the terms and privacy notice', () => {
-    const layout = html(
+  const layout = () =>
+    html(
       <RootLayout>
         <p>content</p>
       </RootLayout>,
     );
-    expect(layout).toMatch(/<a[^>]*class="brand"[^>]*href="\/"|<a[^>]*href="\/"[^>]*class="brand"/);
-    expect(layout).toContain('href="/terms"');
-    expect(layout).toContain('href="/privacy"');
+
+  it('links the brand to the landing page and every page to the terms and privacy notice', () => {
+    const page = layout();
+    expect(page).toMatch(/<a[^>]*class="brand"[^>]*href="\/"|<a[^>]*href="\/"[^>]*class="brand"/);
+    expect(page).toMatch(/<footer[\s\S]*href="\/terms"[\s\S]*<\/footer>/);
+    expect(page).toMatch(/<footer[\s\S]*href="\/privacy"[\s\S]*<\/footer>/);
+  });
+
+  it('hides the header Buy button without STRIPE_PAYMENT_LINK and shows it with one', () => {
+    vi.stubEnv('STRIPE_PAYMENT_LINK', '');
+    expect(layout()).not.toMatch(/>Buy/);
+    vi.stubEnv('STRIPE_PAYMENT_LINK', PAYMENT_LINK);
+    expect(layout()).toMatch(new RegExp(`<a[^>]*href="${PAYMENT_LINK}"[^>]*>Buy · \\$15/mo</a>`));
   });
 });

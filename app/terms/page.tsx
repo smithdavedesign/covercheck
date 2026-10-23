@@ -1,16 +1,18 @@
-import type { Metadata } from 'next';
 import { DISCLAIMER } from '../../lib/check';
-import { PRICE_PER_MONTH_USD, siteConfig } from '../../lib/site';
+import { pageMetadata } from '../../lib/seo';
+import { ISSUES_URL, PRICE_PER_MONTH_USD, siteConfig } from '../../lib/site';
 
-export const metadata: Metadata = {
+export const metadata = pageMetadata({
   title: 'Terms · covercheck',
-  description: 'The terms for using covercheck and for the paid plan.',
-};
+  description: `The terms for using covercheck: a checklist, not advice; no warranty; and the $${PRICE_PER_MONTH_USD}/month plan, cancelling and refunds.`,
+  path: '/terms',
+});
 
-const UPDATED = '2026-10-22';
+const UPDATED = '2026-10-23';
 
 export default function TermsPage() {
   const { contactEmail } = siteConfig(process.env);
+  const issues = <a href={ISSUES_URL}>covercheck’s GitHub issues</a>;
   return (
     <article className="legal">
       <h1>Terms of use</h1>
@@ -39,28 +41,32 @@ export default function TermsPage() {
         </li>
       </ul>
 
-      <h2>Paid plan and billing</h2>
+      <h2>Price, cancelling and refunds</h2>
       <p>
-        The paid plan is ${PRICE_PER_MONTH_USD} per month per association, billed monthly by Stripe. You can cancel any time
-        by emailing us; the subscription then ends at the close of the current month. If you ask within 14 days of a charge,
-        we refund that month. During the pilot every feature stays available whether or not you subscribe, and we will give
-        30 days’ notice by email before any change to the price or to what is included.
+        Checking a single certificate is free. The paid plan is ${PRICE_PER_MONTH_USD} per month per association, billed
+        monthly by Stripe. You can cancel any time; the subscription then ends at the close of the current month. If you ask
+        within 14 days of a charge, we refund that month. During the pilot every feature stays available whether or not you
+        pay, and we will give 30 days’ notice by email before any change to the price or to what is included.
       </p>
 
-      <h2>Availability and liability</h2>
+      <h2>No warranty</h2>
       <p>
-        covercheck runs on free hosting tiers and is provided as is, without an uptime guarantee; a reminder can arrive a day
-        late. To the extent the law allows, our liability is limited to what you paid us in the 12 months before a claim.
+        covercheck is provided “as is” and “as available”, without warranty of any kind, express or implied, including
+        fitness for a particular purpose and accuracy of any verdict. It runs on free hosting tiers without an uptime
+        guarantee, and a reminder can arrive late or not at all. To the extent the law allows, our liability is limited to
+        what you paid us in the 12 months before a claim.
       </p>
 
       <h2>Contact</h2>
       <p>
+        Questions, cancellations and refunds: open an issue on {issues} (it is public, so leave out payment and personal
+        details)
         {contactEmail ? (
           <>
-            Questions, cancellations and refunds: <a href={`mailto:${contactEmail}`}>{contactEmail}</a>.
+            , or write to <a href={`mailto:${contactEmail}`}>{contactEmail}</a>.
           </>
         ) : (
-          'The contact address will be published here before paid plans start.'
+          '.'
         )}
       </p>
     </article>

@@ -253,6 +253,10 @@ header.site nav a {
   font-weight: 500;
 }
 
+header.site .buy {
+  white-space: nowrap;
+}
+
 fieldset.plain {
   border: 0;
   margin: 0;
@@ -489,8 +493,15 @@ footer.site a {
     display: none;
   }
 
+  /* Brand and Buy share the first row; the page links get their own. */
   header.site nav {
     margin-left: 0;
+    order: 1;
+    flex-basis: 100%;
+  }
+
+  header.site .buy {
+    margin-left: auto;
   }
 
   main {

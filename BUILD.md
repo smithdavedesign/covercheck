@@ -1,5 +1,10 @@
 # covercheck — build notes
 
+> **Go-live (2026-10-23), see [LAUNCH-READY.md](LAUNCH-READY.md):** the price is now **$15/month** (REVENUE.md) and the
+> payment link comes from **`STRIPE_PAYMENT_LINK`** (it was `CHECKOUT_URL`; the Subscribe button is now **Buy**, also in
+> the header). Search and sharing tags, robots.txt, sitemap.xml, a share image and the RepoHQ visit beacon were added.
+> The M3 plan below is kept as written, with the old names; the run, deploy and infrastructure sections are current.
+
 ## Plan
 
 Milestone: **M3 — Demand test and log export** (MVP run, 3 of 3). M1 and M2 are built and their tests stay green.
@@ -167,8 +172,8 @@ Five pages, with the header linking to the checker and dashboard and the footer 
   **Check a certificate free**, opens the checker, and **Track all your vendors** opens the dashboard. Below that: a sample
   verdict for a roofer's certificate, which is the rules engine's real output (a $500,000 limit below the $1M requirement,
   CG 20 37 missing, workers' comp expiring soon), then how it works, what it checks, and pricing. The pricing section shows
-  **$19 per month per association**. With `CHECKOUT_URL` set it shows a **Subscribe** button to the Stripe Payment Link;
-  otherwise it says "Free during the pilot".
+  **$15 per month per association** (go-live; it was $19 in M3). With `STRIPE_PAYMENT_LINK` set it shows a **Buy** button to
+  the Stripe Payment Link, and every page's header shows **Buy · $15/mo**; otherwise it says "Free during the pilot".
 - **`/check`: the certificate checker** (M1, plus M2's vendor mode). Upload an ACORD 25 PDF, confirm the values read,
   and get pass/fail per requirement with a one-line reason. Every upload and verdict is now counted (anonymously).
 - **`/dashboard`: the vendor dashboard** (M2). Vendors soonest expiry first, with status colours, failed reasons, "Check
@@ -206,11 +211,11 @@ Node 22 or newer (22.18+ for `npm run screenshots`, which imports a TypeScript t
 
 ```bash
 npm install          # works with npm_config_ignore_scripts; no package needs an install script
-npm test             # vitest: 347 tests in 20 files, no network, no secrets
+npm test             # vitest: 395 tests in 22 files (after go-live), no network, no secrets
 npm run typecheck
 npm run dev          # http://localhost:3000 (landing), /check, /dashboard, /terms, /privacy
 npm run build && npm start   # production build
-npm run screenshots  # builds, starts the app on a throwaway database, saves docs/screenshots/*.png (needs CHROMIUM_PATH)
+npm run screenshots  # builds with a placeholder payment link, starts the app on a throwaway database, saves docs/screenshots/*.png (needs CHROMIUM_PATH)
 ```
 
 - **Database:** with no `DATABASE_URL`, the app uses a local PGlite database in `.data/pglite` (gitignored), created with its
@@ -218,8 +223,8 @@ npm run screenshots  # builds, starts the app on a throwaway database, saves doc
   (`VERCEL` set) it refuses to start without `DATABASE_URL`.
 - **Usage counts locally:** put any long random `STATS_SECRET` in `.env.local`, then
   `curl -H "Authorization: Bearer <that value>" http://localhost:3000/api/usage`.
-- **Checkout and contact locally:** `CHECKOUT_URL` (an `https:` Payment Link) and `CONTACT_EMAIL` in `.env.local`. They are read
-  when the static pages are built, so restart `npm run dev` or rebuild after changing them.
+- **Checkout and contact locally:** `STRIPE_PAYMENT_LINK` (an `https:` Payment Link) and `CONTACT_EMAIL` in `.env.local`. They are
+  read when the static pages are built, so restart `npm run dev` or rebuild after changing them.
 - **Reminders locally:** `CRON_SECRET`, `SMTP_URL` and `EMAIL_FROM` in `.env.local` (Mailpit works as `SMTP_URL=smtp://localhost:1025`),
   then call `GET /api/cron/reminders` with `Authorization: Bearer <your CRON_SECRET>`.
 - **Screenshots:** `CHROMIUM_PATH` must point at a Chromium/Chrome binary (Playwright never downloads one). The script seeds
@@ -237,12 +242,12 @@ Vercel Hobby + Neon free tier + a free SMTP account, $0 for the free pilot:
 4. Check it: open `/`, click "Check a certificate free", upload a certificate; create an association on `/dashboard`, add a
    vendor, save a check, download the check log; then `GET /api/usage` with the stats secret shows the upload and the verdicts.
 
-**Taking money** (the last `request` line in `.provision`): create a Stripe Payment Link ($19/month, recurring, with a custom
-field for the association name), set `CHECKOUT_URL` and `CONTACT_EMAIL`, and redeploy (the landing and legal pages are static).
+**Taking money** (the `request` line in `.provision`): create a Stripe Payment Link ($15/month, recurring, with a custom
+field for the association name), set `STRIPE_PAYMENT_LINK` and `CONTACT_EMAIL`, and redeploy (the landing and legal pages are static).
 **Do this only on a host that allows commercial use.** Vercel Hobby doesn't (payments and advertising a paid product both count).
 Netlify's free plan does, and runs Next.js; the daily reminder job would then need a Netlify scheduled function or a GitHub
 Actions cron calling `/api/cron/reminders` with the `CRON_SECRET`. The other option is Vercel Pro, which isn't $0. Until then,
-leave `CHECKOUT_URL` unset; the pricing section says "Free during the pilot".
+leave `STRIPE_PAYMENT_LINK` unset; the pricing section says "Free during the pilot" and no Buy button shows.
 
 ## Exit criteria
 
@@ -267,23 +272,27 @@ SMTP send, Vercel Cron, and Stripe.
 
 ## Infrastructure
 
-`.provision` asks for:
+The MVP's `.provision` asked for:
 
 - `neon db covercheck` → `DATABASE_URL` (Postgres, Neon free tier).
 - `vercel project covercheck`: the Vercel Hobby project.
 - `vercel env covercheck DATABASE_URL`: in case the project was created before the database.
 - `request` **SMTP account** → `SMTP_URL` + `EMAIL_FROM` (M2). A dedicated Gmail account with an app password at $0.
 - `request` **`CRON_SECRET`** (M2): random, ≥ 32 characters. The cron route refuses to run without it.
-- `request` **`STATS_SECRET`** (new): random, ≥ 32 characters, in the Vercel env and David's keychain. It guards `GET /api/usage`.
-- `request` **Payments** (new): a Stripe account and a $19/month Payment Link → `CHECKOUT_URL` (public, not a secret), plus
-  `CONTACT_EMAIL` for the legal pages, and the commercial-use hosting decision above before turning checkout on.
+- `request` **`STATS_SECRET`** (M3): random, ≥ 32 characters, in the Vercel env and David's keychain. It guards `GET /api/usage`.
+- `request` **Payments** (M3): a Stripe account and a Payment Link, plus `CONTACT_EMAIL` for the legal pages, and the
+  commercial-use hosting decision above before turning checkout on.
 
-The code reads `DATABASE_URL`, `SMTP_URL`, `EMAIL_FROM`, `CRON_SECRET`, `STATS_SECRET`, `CHECKOUT_URL`, `CONTACT_EMAIL`
-(plus `PGLITE_DIR` locally and Vercel's own `VERCEL`) from the environment. Tests never need real values.
+The go-live `.provision` has two lines: `vercel project covercheck` and a request for the $15/month Stripe Payment Link
+(→ `STRIPE_PAYMENT_LINK`, public, not a secret).
+
+The code reads `DATABASE_URL`, `SMTP_URL`, `EMAIL_FROM`, `CRON_SECRET`, `STATS_SECRET`, `STRIPE_PAYMENT_LINK`, `CONTACT_EMAIL`
+(plus `PGLITE_DIR` locally, and Vercel's own `VERCEL`, `VERCEL_PROJECT_PRODUCTION_URL` and `NEXT_PUBLIC_VERCEL_ENV`) from the
+environment. Tests never need real values.
 
 ## What's left
 
-- **Before charging:** move to a commercial-use host (or Vercel Pro), create the Payment Link, and set `CHECKOUT_URL` and
+- **Before charging:** move to a commercial-use host (or Vercel Pro), create the Payment Link, and set `STRIPE_PAYMENT_LINK` and
   `CONTACT_EMAIL`. The terms and privacy notice are plain-English drafts; have them reviewed, and confirm the refund promise
   (14 days) and the 30-day notice before limits.
 - **Paid-plan mechanics:** linking a Stripe payment to an association (webhook + secret), plan limits for non-paying boards,

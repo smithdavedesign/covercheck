@@ -2,25 +2,25 @@
 
 ## Screenshots
 
-Captured by `npm run screenshots` from the production build, with sample data only.
+Captured by `npm run screenshots` from the production build, with sample data only and a placeholder payment link (`https://example.com/pay`).
 
-![Landing page on desktop](docs/screenshots/home-desktop.png)
-The landing page leads with the "Check a certificate free" call to action and a sample verdict produced by the real rules.
+![Landing page on desktop, with the Buy button in the header](docs/screenshots/home-desktop.png)
+The landing page leads with "Check a certificate free" and a sample verdict from the real rules; the header's Buy · $15/mo button appears because a payment link is set.
 
 ![Landing page on a phone](docs/screenshots/home-mobile.png)
-The same landing page fits an iPhone 13 screen, with the call to action above the fold.
+The same page on an iPhone 13: the brand and the Buy button share the top row, and the call to action stays above the fold.
 
 ![Verdict for an uploaded certificate on desktop](docs/screenshots/result-desktop.png)
-A sample ACORD 25 PDF uploaded on `/check` is read and checked: the $500,000 limit and missing CG 20 37 fail with plain-English reasons, and workers' comp gets an "expires soon" warning.
+The core action: a sample ACORD 25 PDF uploaded on `/check` is read and checked; the $500,000 limit and the missing CG 20 37 fail with plain-English reasons, and workers' comp gets an "expires soon" warning.
 
 ![Verdict for an uploaded certificate on a phone](docs/screenshots/result-mobile.png)
 The same verdict on a phone, one requirement per line.
 
-![Vendor dashboard on desktop](docs/screenshots/dashboard-desktop.png)
-The vendor dashboard lists vendors soonest expiry first, with status colours (Expired, Expires soon, OK, Not compliant), failed reasons and one-click actions.
+![Pricing, Buy button and footer on desktop](docs/screenshots/pricing-desktop.png)
+The bottom of the landing page: $15 per month per association with the Buy button, and the footer's Pricing, Terms and Privacy links.
 
-![Vendor dashboard on a phone](docs/screenshots/dashboard-mobile.png)
-On a phone, each vendor becomes a card with its status, reasons, expiry and actions.
+![Pricing, Buy button and footer on a phone](docs/screenshots/pricing-mobile.png)
+The same pricing section and footer links on a phone.
 
 For self-managed HOA and condo boards and small property managers, it checks each vendor's insurance certificate for the endorsement, name and expiry that actually protect the association, and nudges vendors before coverage lapses, at a board-sized price instead of $99+/month.
 
@@ -28,6 +28,7 @@ For self-managed HOA and condo boards and small property managers, it checks eac
 - [PRD](PRD.md)
 - [Roadmap](ROADMAP.md)
 - [Build notes](BUILD.md): what's built, how to run, test and deploy it
+- [Launch notes](LAUNCH-READY.md): search and sharing tags, legal pages, Buy button, visit beacon, and what's left before launch
 
 Effort: Medium · Confidence: Low
 
