@@ -10,7 +10,7 @@
  * browser has localStorage "repohq:notrack" set (the owner's own browser), or when storage is blocked.
  * The privacy page describes exactly this; change both together.
  */
-export const SIGNAL_URL = 'https://repohq.vercel.app/api/ideas/signal';
+export const SIGNAL_URL = 'https://idea-factory.1426davejobs.workers.dev/api/ideas/signal';
 export const SIGNAL_SLUG = 'covercheck';
 export const NO_TRACK_KEY = 'repohq:notrack';
 

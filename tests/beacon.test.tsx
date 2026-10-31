@@ -66,7 +66,7 @@ describe('signal()', () => {
     signal('checkout');
     expect(fetchMock).toHaveBeenCalledTimes(1);
     const [url, init] = fetchMock.mock.calls[0] as [string, RequestInit];
-    expect(url).toBe('https://repohq.vercel.app/api/ideas/signal');
+    expect(url).toBe('https://idea-factory.1426davejobs.workers.dev/api/ideas/signal');
     expect(init).toMatchObject({ method: 'POST', keepalive: true, credentials: 'omit', referrerPolicy: 'no-referrer' });
     expect(new Headers(init.headers).get('content-type')).toBe('application/json');
     expect(JSON.parse(init.body as string)).toEqual({ slug: 'covercheck', kind: 'checkout', referrer: null });
