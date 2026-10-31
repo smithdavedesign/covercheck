@@ -23,7 +23,7 @@ const NEXT_BIN = 'node_modules/next/dist/bin/next';
 const START_TIMEOUT_MS = 60_000;
 /** Shows the Buy buttons without a real Stripe link. The pages are static, so the build bakes it in. */
 const PLACEHOLDER_PAYMENT_LINK = 'https://example.com/pay';
-const SIGNAL_URL = 'https://repohq.vercel.app/api/ideas/signal';
+const SIGNAL_URL = 'https://idea-factory.1426davejobs.workers.dev/api/ideas/signal';
 
 const APP_ENV = {
   ...process.env,

@@ -21,7 +21,7 @@ the only visible product changes are the price ($19 → $15/month, per REVENUE.m
    says "Free during the pilot". The variable is read on the server, so it doesn't need a `NEXT_PUBLIC_` name. No link or key
    is in the code.
 4. **Visit beacon** (`lib/beacon.ts`, `app/beacon.tsx`). It POSTs `{"slug":"covercheck","kind":…,"referrer":…}` as JSON to
-   `https://repohq.vercel.app/api/ideas/signal` (fire-and-forget, `keepalive`, `credentials: 'omit'`, `referrerPolicy: 'no-referrer'`):
+   `https://idea-factory.1426davejobs.workers.dev/api/ideas/signal` (fire-and-forget, `keepalive`, `credentials: 'omit'`, `referrerPolicy: 'no-referrer'`):
    - `visit`: on every page (the root layout mounts it), once per browser session (`sessionStorage`).
    - `activate`: the first time this browser gets a certificate verdict, once per browser (`localStorage`). **The core action
      is "check a certificate and get the verdict"**: a successful response from `/api/check` (the free checker on `/check`) or

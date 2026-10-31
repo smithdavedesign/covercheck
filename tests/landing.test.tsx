@@ -122,7 +122,7 @@ describe('legal pages', () => {
   it('privacy: names the three visit-counter signals, what they carry and how to switch them off', () => {
     const privacy = html(<PrivacyPage />);
     for (const kind of ['visit', 'activate', 'checkout']) expect(privacy).toContain(`<strong>${kind}</strong>`);
-    expect(privacy).toContain('repohq.vercel.app');
+    expect(privacy).toContain('idea-factory.1426davejobs.workers.dev');
     expect(privacy).toMatch(/no cookie, identifier/);
     expect(privacy).toContain('repohq:notrack');
   });
