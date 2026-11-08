@@ -1,0 +1,28 @@
+// covercheck on Cloudflare Workers (free plan), through the OpenNext adapter: `npm run cf:build` turns the
+// Next.js build into .open-next/worker.js plus static assets. Vercel ignores this file, so both hosts
+// build from the same code. Deploy with the credential broker, which injects the token:
+//   provision cloudflare deploy covercheck <this checkout>
+// Secrets are Worker secrets, never in this file: `provision cloudflare secret covercheck <KEY>` for
+// DATABASE_URL, and, once they exist, CRON_SECRET, STATS_SECRET, SMTP_URL and EMAIL_FROM.
+// STRIPE_PAYMENT_LINK and CONTACT_EMAIL are read when the pages are prerendered, so they must be set
+// in the build's environment (then rebuild and redeploy), not only as Worker secrets.
+// Local runs read secrets from .dev.vars (gitignored, like every .env file).
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "covercheck",
+  "main": ".open-next/worker.js",
+  "compatibility_date": "2026-10-15",
+  // nodejs_compat: Buffer, node:crypto and the rest of the Node APIs Next.js uses. It also fills
+  // process.env from vars and secrets, which is where the app reads them.
+  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "assets": {
+    "directory": ".open-next/assets",
+    "binding": "ASSETS"
+  },
+  "services": [
+    // OpenNext calls the Worker itself for some cache work; the name must match "name" above.
+    { "binding": "WORKER_SELF_REFERENCE", "service": "covercheck" }
+  ],
+  "workers_dev": true,
+  "observability": { "enabled": true }
+}

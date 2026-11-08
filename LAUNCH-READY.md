@@ -29,8 +29,9 @@ the only visible product changes are the price ($19 → $15/month, per REVENUE.m
    - `checkout`: every click (or middle-click) on a Buy button.
 
    `referrer` is `document.referrer` only when its origin differs from `location.origin`; otherwise it's `null`. Nothing is sent
-   when `NEXT_PUBLIC_VERCEL_ENV` isn't `production`, when `navigator.webdriver` is true, when localStorage `repohq:notrack` is
-   set, or when site storage is blocked.
+   outside production, when `navigator.webdriver` is true, when localStorage `repohq:notrack` is set, or when site storage is
+   blocked. Production is `NEXT_PUBLIC_DEPLOY_ENV=production` (set by `npm run cf:build`, the Cloudflare Worker's build), or
+   else `NEXT_PUBLIC_VERCEL_ENV=production` (Vercel's production deployment).
 5. **`.provision`**: `vercel project covercheck` and the request for the $15/month Stripe Payment Link.
 6. **Tests**: 395 in 22 files, all passing. New: `tests/launch.test.tsx` (every page renders; unique titles and descriptions;
    canonical, OG and Twitter tags with the image; JSON-LD; robots and sitemap; the share image is a real 1200×630 PNG) and
@@ -51,8 +52,9 @@ the only visible product changes are the price ($19 → $15/month, per REVENUE.m
   month, and a refund of that month if asked within 14 days of a charge.
 - **Contact:** GitHub issues, as asked. Issues are public, so both pages warn against posting personal or payment details; the
   `CONTACT_EMAIL` address appears as a private route when it's set.
-- **Canonical host:** Vercel's `VERCEL_PROJECT_PRODUCTION_URL` (set on every build and switched to a custom domain
-  automatically), falling back to `https://covercheck.vercel.app`. Preview builds point their canonical tags at production.
+- **Canonical host:** the Cloudflare Worker, `https://covercheck.1426davejobs.workers.dev` (`DEFAULT_SITE_URL` in
+  `lib/site.ts`). A Vercel build uses Vercel's `VERCEL_PROJECT_PRODUCTION_URL` instead (set on every build, previews included,
+  so their canonical tags point at production).
 - **Share image per page:** Next merges metadata shallowly, so a page that sets `openGraph` loses the root's file-based image.
   Each page names `/opengraph-image` and `/twitter-image` itself; the build output was checked for exactly one image tag of each per page.
 - **Beacon on the dashboard too:** the root layout mounts it on every page. It never sends the page URL, so the `#k=` dashboard
@@ -80,20 +82,24 @@ After deploying to production:
 
 ## What's left for David
 
-1. **Stripe payment link.** Create a $15/month recurring Payment Link (`.provision` requests it). Ideally add a custom field for
-   the association name and turn on the customer portal for self-cancelling. Paste the link into the Vercel env as
-   **`STRIPE_PAYMENT_LINK`** (Production) and **redeploy**; the pages are static and read it at build time.
-2. **Hosting before charging.** Vercel Hobby is for non-commercial use only, and a Buy button counts as commercial. Before
-   setting `STRIPE_PAYMENT_LINK`, move to Vercel Pro or a free host that allows commercial use (BUILD.md, "Deploy").
+1. **Stripe payment link.** Create a $15/month recurring Payment Link (`provision stripe covercheck 15 --monthly --host
+   cloudflare` makes one in test mode). Ideally add a custom field for the association name and turn on the customer portal for
+   self-cancelling. The pages are static and read **`STRIPE_PAYMENT_LINK`** when they're prerendered, so set it in the build's
+   environment, then `npm run cf:build` and deploy again (BUILD.md, "Deploy"); a Worker secret alone doesn't show the Buy button.
+2. **Hosting before charging: done.** covercheck moved to Cloudflare Workers' free plan on 2026-11-08, which allows commercial
+   use (Vercel Hobby didn't).
 3. **Mark your own browser.** On the production site, run `localStorage.setItem('repohq:notrack', '1')` in the developer console
    once per browser you use, so your visits aren't counted.
-4. **Check the first signals arrive in RepoHQ** after deploying (the CORS assumption above). Leave Vercel's "Automatically expose
-   System Environment Variables" on (the default); without it `NEXT_PUBLIC_VERCEL_ENV` is missing and the beacon stays silent.
+4. **Check the first signals arrive in RepoHQ** (the CORS assumption above). On 2026-11-08 the idea-factory Worker that
+   receives them (`SIGNAL_URL`) wasn't deployed yet (Cloudflare answered 404, error 1042), so signals are lost until it is.
 5. **Make sure the GitHub repo is public**, or the contact link on `/privacy` and `/terms` leads nowhere for visitors. Optionally
    set `CONTACT_EMAIL` for private requests (deletion, billing).
-6. **Custom domain (optional).** Add it in Vercel and make it the production domain. Canonical URLs, the sitemap, robots.txt and the
-   JSON-LD follow it on the next deploy, with no code change.
+6. **Custom domain (optional).** Add it to the Worker in Cloudflare, set `DEFAULT_SITE_URL` in `lib/site.ts` to it, then
+   rebuild and deploy: canonical URLs, the sitemap, robots.txt and the JSON-LD follow it.
 7. Have the plain-English terms and privacy notice reviewed, including the 14-day refund promise.
+8. **Reminders on the Worker.** Store `SMTP_URL`, `EMAIL_FROM` and `CRON_SECRET` (and `STATS_SECRET` for `/api/usage`), push them
+   with `provision cloudflare secret covercheck <KEY>`, and schedule the daily job (BUILD.md, "Deploy": Vercel Cron doesn't
+   exist on a Worker).
 
 ## Review
 
@@ -122,12 +128,12 @@ Self-review of `git status` / `git diff` (plus the new untracked files, read in 
 - Fixed `[P3] (8/10) lib/seo.ts`: renamed a helper whose name clashed with `app/share-image.tsx`'s `shareImage`.
 - Open `[P2] (6/10) lib/beacon.ts`: a JSON body from the browser means a CORS preflight. If RepoHQ doesn't allow it, every
   signal fails silently and the counts stay at zero. This follows the brief ("POST JSON"); check it after deploying (above).
-- Open `[P2] (8/10)` hosting: a Buy button on Vercel Hobby breaks its non-commercial terms. Not auto-fixed: it's a business decision
-  for David (above).
+- Closed `[P2] (8/10)` hosting: a Buy button on Vercel Hobby broke its non-commercial terms. covercheck now runs on Cloudflare
+  Workers' free plan, which allows commercial use.
 - Open `[P3] (6/10) lib/beacon.ts`: `sessionStorage` is per tab, so two tabs count two visits. Two tabs reaching their first
   verdict in the same instant could both send `activate`. Both are inherent to the storage-based design and harmless for demand counting.
 - Open `[P3] (6/10) app/layout.tsx`, `app/page.tsx`: `STRIPE_PAYMENT_LINK` is baked into the static pages at build time, so changing
-  it needs a redeploy (as any Vercel env change does).
+  it needs a rebuild and redeploy.
 - Open `[P3] (5/10) app/landing.tsx`: the "terms" link under the Buy button uses the browser's default link colour (pre-existing,
   cosmetic).
 - Still open from M2/M3 (unchanged, see BUILD.md): reminder abuse controls, rate limits on public endpoints.

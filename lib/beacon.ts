@@ -6,8 +6,9 @@
  *   activate  the first certificate verdict            once per browser  (localStorage)
  *   checkout  a click on a Buy button                  every click
  *
- * Nothing is sent outside Vercel production, from automated browsers (navigator.webdriver), when the
- * browser has localStorage "repohq:notrack" set (the owner's own browser), or when storage is blocked.
+ * Nothing is sent outside production (the Cloudflare Worker, or Vercel's production deployment), from
+ * automated browsers (navigator.webdriver), when the browser has localStorage "repohq:notrack" set (the
+ * owner's own browser), or when storage is blocked.
  * The privacy page describes exactly this; change both together.
  */
 export const SIGNAL_URL = 'https://idea-factory.1426davejobs.workers.dev/api/ideas/signal';
@@ -32,9 +33,17 @@ export function externalReferrer(referrer: string, origin: string): string | nul
   }
 }
 
+/**
+ * Which deployment this build is, on either host: the Cloudflare build sets NEXT_PUBLIC_DEPLOY_ENV
+ * (`npm run cf:build`); Vercel sets NEXT_PUBLIC_VERCEL_ENV. Both are inlined at build time, so each
+ * must be read by its full literal name.
+ */
+export function deployEnv(): string | undefined {
+  return process.env.NEXT_PUBLIC_DEPLOY_ENV ?? process.env.NEXT_PUBLIC_VERCEL_ENV;
+}
+
 function trackingAllowed(): boolean {
-  // Written out in full so Next.js inlines it into the browser bundle at build time.
-  if (process.env.NEXT_PUBLIC_VERCEL_ENV !== 'production') return false;
+  if (deployEnv() !== 'production') return false;
   if (typeof window === 'undefined' || navigator.webdriver) return false;
   return window.localStorage.getItem(NO_TRACK_KEY) === null;
 }

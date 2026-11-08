@@ -9,8 +9,8 @@ export const PRICE_PER_MONTH_USD = 15;
 export const REPO_URL = 'https://github.com/smithdavedesign/covercheck';
 export const ISSUES_URL = `${REPO_URL}/issues`;
 
-/** The Vercel project's default domain, used for canonical URLs when the build doesn't say otherwise. */
-export const DEFAULT_SITE_URL = 'https://covercheck.vercel.app';
+/** The Cloudflare Worker's address, used for canonical URLs when the build doesn't say otherwise. */
+export const DEFAULT_SITE_URL = 'https://covercheck.1426davejobs.workers.dev';
 
 export interface SiteConfig {
   /** The Stripe Payment Link from STRIPE_PAYMENT_LINK; `null` hides every Buy button. */
@@ -51,7 +51,8 @@ export function siteConfig(env: Env): SiteConfig {
 /**
  * The site's public origin for canonical URLs, the sitemap and share tags. Vercel sets
  * VERCEL_PROJECT_PRODUCTION_URL (a bare host, the custom domain once there is one) on every build,
- * previews included, so canonical links always point at production.
+ * previews included, so canonical links always point at production. The Cloudflare build sets nothing
+ * and gets the Worker's address.
  */
 export function siteUrl(env: Env): string {
   const host = env.VERCEL_PROJECT_PRODUCTION_URL?.trim();

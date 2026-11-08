@@ -13,7 +13,8 @@
     "start": "next start",
     "test": "vitest run",
     "typecheck": "tsc --noEmit",
-    "screenshots": "node scripts/screenshots.mjs"
+    "screenshots": "node scripts/screenshots.mjs",
+    "cf:build": "NEXT_PUBLIC_DEPLOY_ENV=production COVERCHECK_WORKER_BUILD=1 opennextjs-cloudflare build && opennextjs-cloudflare populateCache local"
   },
   "dependencies": {
     "@electric-sql/pglite": "^0.5.11",
@@ -26,6 +27,7 @@
     "zod": "^4.6.7"
   },
   "devDependencies": {
+    "@opennextjs/cloudflare": "^1.20.16",
     "@types/node": "^22.20.5",
     "@types/nodemailer": "^8.0.2",
     "@types/react": "^19.3.0",
@@ -33,6 +35,7 @@
     "happy-dom": "^21.0.4",
     "playwright-core": "^1.64.1",
     "typescript": "~5.9.3",
-    "vitest": "^5.0.5"
+    "vitest": "^5.0.5",
+    "wrangler": "^4.158.0"
   }
 }

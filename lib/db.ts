@@ -97,15 +97,21 @@ function neonDb(url: string): Db {
 
 type Env = Record<string, string | undefined>;
 
+/** True inside a Cloudflare Worker, which identifies itself this way (Node.js reports `Node.js/<version>`). */
+export function onCloudflareWorkers(): boolean {
+  return typeof navigator !== 'undefined' && navigator.userAgent === 'Cloudflare-Workers';
+}
+
 /**
- * Neon when DATABASE_URL is set; otherwise a local PGlite database, which is never acceptable on Vercel.
+ * Neon when DATABASE_URL is set; otherwise a local PGlite database, which is never acceptable in a
+ * deployment (Vercel or the Cloudflare Worker, which has no filesystem for it either).
  * PGLITE_DIR moves the local database (the screenshot script uses a throwaway one).
  */
 export async function connect(env: Env): Promise<Db> {
   let db: Db;
   if (env.DATABASE_URL) {
     db = neonDb(env.DATABASE_URL);
-  } else if (env.VERCEL) {
+  } else if (env.VERCEL || onCloudflareWorkers()) {
     throw new Error('DATABASE_URL is not set; refusing to use a throwaway database in a deployment.');
   } else {
     const { PGlite } = await import('@electric-sql/pglite');

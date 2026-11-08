@@ -9,3 +9,7 @@ next-env.d.ts
 .vercel
 # Local development database (PGlite) used when DATABASE_URL is not set.
 .data/
+# Cloudflare (OpenNext) build output and wrangler's local state; .dev.vars* hold local secrets.
+.open-next/
+.wrangler/
+.dev.vars*

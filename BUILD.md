@@ -220,7 +220,7 @@ npm run screenshots  # builds with a placeholder payment link, starts the app on
 
 - **Database:** with no `DATABASE_URL`, the app uses a local PGlite database in `.data/pglite` (gitignored), created with its
   schema on first use (`PGLITE_DIR` moves it). Set `DATABASE_URL` in `.env.local` to use Postgres/Neon instead. On Vercel
-  (`VERCEL` set) it refuses to start without `DATABASE_URL`.
+  (`VERCEL` set) and on the Cloudflare Worker it refuses to start without `DATABASE_URL`.
 - **Usage counts locally:** put any long random `STATS_SECRET` in `.env.local`, then
   `curl -H "Authorization: Bearer <that value>" http://localhost:3000/api/usage`.
 - **Checkout and contact locally:** `STRIPE_PAYMENT_LINK` (an `https:` Payment Link) and `CONTACT_EMAIL` in `.env.local`. They are
@@ -232,22 +232,40 @@ npm run screenshots  # builds with a placeholder payment link, starts the app on
 
 ## Deploy (free tier)
 
-Vercel Hobby + Neon free tier + a free SMTP account, $0 for the free pilot:
+Cloudflare Workers (free plan) + Neon free tier + a free SMTP account, $0. Since 2026-11-08 covercheck runs on a Cloudflare
+Worker at https://covercheck.1426davejobs.workers.dev, through the OpenNext adapter (`open-next.config.ts`, `wrangler.jsonc`).
+The Vercel build still works from the same code (`npm run build`, `vercel.json`), but the Vercel team is on Hobby and every
+deployment there answers 402.
 
-1. The pipeline runs `.provision`: a Neon Postgres database (`DATABASE_URL`), the Vercel project, and `DATABASE_URL` pushed to its env.
-2. David stores `SMTP_URL`, `EMAIL_FROM`, `CRON_SECRET` and `STATS_SECRET` through the credential broker and pushes them to the
-   Vercel env (the `request` lines in `.provision`).
-3. Import the repo into the Vercel project (or `npx vercel --prod`). Framework preset Next.js, default build. `vercel.json`
-   registers the daily cron (`0 13 * * *`). The schema, including the new `usage_counts` table, is created on the first request.
+1. Build: `npm ci && npm run cf:build`. It runs `next build` and turns it into `.open-next/worker.js` plus static assets, with
+   `NEXT_PUBLIC_DEPLOY_ENV=production` so the visit beacon counts the Worker's visitors. Its last step
+   (`opennextjs-cloudflare populateCache local`) copies the prerendered pages and share images into the static assets, so the
+   Worker serves them as files instead of rendering them on every request (the broker's deploy is a plain `wrangler deploy`,
+   which doesn't do that step). `COVERCHECK_WORKER_BUILD=1` leaves next/og's renderer out of the Worker (`next.config.ts`):
+   the share images are drawn at build time, and the renderer would take ~0.7 MiB of the free plan's 3 MiB. The Worker is
+   ~2.2 MiB compressed.
+2. Deploy through the credential broker, which holds the Cloudflare token: `provision cloudflare deploy covercheck "$PWD"`.
+   `provision cloudflare url covercheck` prints the address.
+3. Runtime secrets are Worker secrets, pushed from the keychain: `provision cloudflare secret covercheck DATABASE_URL` (done).
+   `CRON_SECRET`, `STATS_SECRET`, `SMTP_URL` and `EMAIL_FROM` go the same way once David has stored them. The schema, including
+   `usage_counts`, is created on the first request. The database is Neon over HTTP (`@neondatabase/serverless`), which a Worker
+   can use as is; on the Worker, as on Vercel, the app refuses to start without `DATABASE_URL`.
 4. Check it: open `/`, click "Check a certificate free", upload a certificate; create an association on `/dashboard`, add a
    vendor, save a check, download the check log; then `GET /api/usage` with the stats secret shows the upload and the verdicts.
 
-**Taking money** (the `request` line in `.provision`): create a Stripe Payment Link ($15/month, recurring, with a custom
-field for the association name), set `STRIPE_PAYMENT_LINK` and `CONTACT_EMAIL`, and redeploy (the landing and legal pages are static).
-**Do this only on a host that allows commercial use.** Vercel Hobby doesn't (payments and advertising a paid product both count).
-Netlify's free plan does, and runs Next.js; the daily reminder job would then need a Netlify scheduled function or a GitHub
-Actions cron calling `/api/cron/reminders` with the `CRON_SECRET`. The other option is Vercel Pro, which isn't $0. Until then,
-leave `STRIPE_PAYMENT_LINK` unset; the pricing section says "Free during the pilot" and no Buy button shows.
+**The daily reminder job is not scheduled on the Worker yet.** Vercel Cron called `/api/cron/reminders` (`vercel.json`); a Worker
+needs a Cron Trigger instead, and it can't do anything until `SMTP_URL`, `EMAIL_FROM` and `CRON_SECRET` exist. When they do:
+wrap `.open-next/worker.js` in a small entry that keeps its `fetch` and adds a `scheduled()` handler calling
+`/api/cron/reminders` with `Authorization: Bearer <CRON_SECRET>`, point `main` at it, and add
+`"triggers": { "crons": ["0 13 * * *"] }` to `wrangler.jsonc` (the free plan allows 5 Cron Triggers per account). A GitHub
+Actions schedule calling the URL with the secret works too.
+
+**Taking money:** Cloudflare's free plan allows commercial use, so the Vercel Hobby blocker is gone. Create the $15/month
+Payment Link (`provision stripe covercheck 15 --monthly --host cloudflare` makes one in Stripe test mode; switching to live is
+David's call). The landing page, the header's Buy button and the legal pages are static and read `STRIPE_PAYMENT_LINK` and
+`CONTACT_EMAIL` when they're prerendered, so the values must be in the build's environment: set them, `npm run cf:build` and
+deploy again. A Worker secret alone doesn't show the Buy button. Until then the pricing section says "Free during the pilot"
+and no Buy button shows.
 
 ## Exit criteria
 
