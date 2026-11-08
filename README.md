@@ -1,5 +1,18 @@
 # covercheck — vendor insurance certificate checker for HOA boards
 
+## Live
+
+**https://covercheck.1426davejobs.workers.dev**
+
+covercheck runs on a Cloudflare Worker (free plan) since 2026-11-08; Vercel's deployment answered 402. Screenshots of the main flow, taken against the live Worker with Chrome for Testing: the landing page, then a sample certificate (the repo's ACORD 25 fixture as a PDF) uploaded, read and checked. The run counted its two uploads and two verdicts in covercheck's anonymous daily usage counters; nothing else was stored. They live in docs/screenshots/live/, which `npm run screenshots` leaves alone.
+
+| | Desktop (1440×900) | Phone (390×844) |
+|---|---|---|
+| The landing page on the Worker (no Buy button yet: there's no payment link, so pricing says "Free during the pilot") | <img src="docs/screenshots/live/home-desktop.png" alt="The landing page on the Worker (no Buy button yet: there's no payment link, so pricing says 'Free during the pilot'), desktop" width="520"> | <img src="docs/screenshots/live/home-phone.png" alt="The landing page on the Worker (no Buy button yet: there's no payment link, so pricing says 'Free during the pilot'), phone" width="200"> |
+| The core action, step 1: a sample ACORD 25 PDF uploaded on /check and read by the Worker; the board confirms what was read | <img src="docs/screenshots/live/fields-desktop.png" alt="The core action, step 1: a sample ACORD 25 PDF uploaded on /check and read by the Worker; the board confirms what was read, desktop" width="520"> | <img src="docs/screenshots/live/fields-phone.png" alt="The core action, step 1: a sample ACORD 25 PDF uploaded on /check and read by the Worker; the board confirms what was read, phone" width="200"> |
+| The verdict: the $500,000 limit and the missing CG 20 37 fail with plain-English reasons; workers' comp gets an "expires soon" warning | <img src="docs/screenshots/live/verdict-desktop.png" alt="The verdict: the $500,000 limit and the missing CG 20 37 fail with plain-English reasons; workers' comp gets an 'expires soon' warning, desktop" width="520"> | <img src="docs/screenshots/live/verdict-phone.png" alt="The verdict: the $500,000 limit and the missing CG 20 37 fail with plain-English reasons; workers' comp gets an 'expires soon' warning, phone" width="200"> |
+| Pricing and the footer's Terms and Privacy links | <img src="docs/screenshots/live/pricing-desktop.png" alt="Pricing and the footer's Terms and Privacy links, desktop" width="520"> | <img src="docs/screenshots/live/pricing-phone.png" alt="Pricing and the footer's Terms and Privacy links, phone" width="200"> |
+
 ## Screenshots
 
 Captured by `npm run screenshots` from the production build, with sample data only and a placeholder payment link (`https://example.com/pay`).

@@ -1,7 +1,7 @@
 import { existsSync, rmSync } from 'node:fs';
 import { PGlite } from '@electric-sql/pglite';
-import { afterAll, beforeAll, describe, expect, it } from 'vitest';
-import { connect, migrate, pgliteDb, type Db } from '../lib/db';
+import { afterAll, beforeAll, describe, expect, it, vi } from 'vitest';
+import { connect, migrate, onCloudflareWorkers, pgliteDb, type Db } from '../lib/db';
 import { listVendors } from '../lib/store';
 import { seedAssociation, seedCheck, seedVendor } from './helpers/db';
 
@@ -45,6 +45,17 @@ describe('database layer (lib/db.ts)', () => {
   it('refuses to run on Vercel without DATABASE_URL instead of falling back to a throwaway database', async () => {
     await expect(connect({ VERCEL: '1' })).rejects.toThrow(/DATABASE_URL/);
     await expect(connect({ VERCEL: '1', PGLITE_DIR: 'memory://' })).rejects.toThrow(/DATABASE_URL/);
+  });
+
+  it('refuses the same on the Cloudflare Worker', async () => {
+    vi.stubGlobal('navigator', { userAgent: 'Cloudflare-Workers' });
+    try {
+      expect(onCloudflareWorkers()).toBe(true);
+      await expect(connect({ PGLITE_DIR: 'memory://' })).rejects.toThrow(/DATABASE_URL/);
+    } finally {
+      vi.unstubAllGlobals();
+    }
+    expect(onCloudflareWorkers()).toBe(false);
   });
 
   it('puts the local database where PGLITE_DIR says, with the schema in place', async () => {

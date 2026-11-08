@@ -43,6 +43,8 @@ async function settle() {
 
 beforeEach(() => {
   vi.stubEnv('NEXT_PUBLIC_VERCEL_ENV', 'production');
+  // The Cloudflare build's marker, which wins when set; unset here so the Vercel cases below hold anywhere.
+  vi.stubEnv('NEXT_PUBLIC_DEPLOY_ENV', undefined);
   fetchMock = vi.fn(async () => new Response(null, { status: 204 }));
   vi.stubGlobal('fetch', fetchMock);
   sessionStorage.clear();
@@ -92,6 +94,13 @@ describe('signal()', () => {
     signal('checkout');
     signal('checkout');
     expect(signals().map((s) => s.kind)).toEqual(['checkout', 'checkout']);
+  });
+
+  it('counts the Cloudflare Worker build (NEXT_PUBLIC_DEPLOY_ENV from `npm run cf:build`) as production', () => {
+    vi.stubEnv('NEXT_PUBLIC_VERCEL_ENV', '');
+    vi.stubEnv('NEXT_PUBLIC_DEPLOY_ENV', 'production');
+    signal('checkout');
+    expect(signals().map((s) => s.kind)).toEqual(['checkout']);
   });
 
   it('passes on a referrer from another site, and never one of its own pages', () => {

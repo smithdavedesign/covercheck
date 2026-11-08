@@ -85,7 +85,7 @@ export default function PrivacyPage() {
       <h2>Why, and who processes it</h2>
       <p>
         The data is used only to show your dashboard, send the reminders you set up, keep your check log and count use. It is
-        processed by Vercel (hosting), Neon (database), the email provider that sends reminders, RepoHQ (the visit counter),
+        processed by Cloudflare (hosting), Neon (database), the email provider that sends reminders, RepoHQ (the visit counter),
         and Stripe (payments, if you buy; covercheck never sees card numbers). It is not sold or shared with anyone else.
       </p>
 

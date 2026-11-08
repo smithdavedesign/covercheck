@@ -114,7 +114,7 @@ describe('legal pages', () => {
     expect(privacy).toMatch(/PDF is never stored/i);
     expect(privacy).toMatch(/usage counts/i);
     expect(privacy).toMatch(/sets no cookies/i);
-    for (const processor of ['Vercel', 'Neon', 'Stripe', 'RepoHQ']) expect(privacy).toContain(processor);
+    for (const processor of ['Cloudflare', 'Neon', 'Stripe', 'RepoHQ']) expect(privacy).toContain(processor);
     expect(privacy).toMatch(/delete/i);
     expect(privacy).toContain('href="mailto:hello@covercheck.example"');
   });
